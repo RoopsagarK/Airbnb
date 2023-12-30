@@ -20,8 +20,7 @@ export default function LoginPage() {
             });
             if(response.data.message === "Login successful") {
                 alert("Login successful");
-                setUser(response.data.user);
-                console.log(response)
+                setUser(response.data.user.rows[0]);
                 setRedirect(true);
             }else {
                 alert("Login failed, Invalid credentials try again! ");

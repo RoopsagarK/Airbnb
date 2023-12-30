@@ -2,20 +2,12 @@ import "dotenv/config";
 import express, { urlencoded } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import pg from "pg";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import db from "./db.js";
 
 const app = express();
-const db = new pg.Client({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.PORT,
-});
-db.connect();
 
 app.use(
   cors({
@@ -35,7 +27,6 @@ app.post("/register", async (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
-  console.log(req.body);
 
   const hashedPassword = await bcrypt.hash(
     password,
@@ -45,7 +36,6 @@ app.post("/register", async (req, res) => {
     "SELECT EXISTS (SELECT email FROM users WHERE email = $1 );",
     [email]
   );
-  console.log(result.rows[0].exists);
   if (!result.rows[0].exists) {
     await db.query(
       "INSERT INTO users(name, email, password) VALUES ($1, $2, $3)",
@@ -58,7 +48,6 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-  console.log(user.rows);
   if (user.rows.length > 0) {
     const passwordMatch = await bcrypt.compare(password, user.rows[0].password);
     if (passwordMatch) {
@@ -81,18 +70,28 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", (req, res) => {
-  const { token } = req.cookies;
-  if (token) {
-    jwt.verify(token, process.env.SECRET_ACCESS_TOKEN, {}, (err, user) => {
-      if (err) throw err;
-      res.json(user);
-    });
-  } else {
-    res.json(null);
+app.get("/profile", authenticateToken, (req, res) => {
+  if (req.user) {
+    console.log(req.user);
+    res.json(req.user);
   }
 });
 
+app.post("/logout", (req, res) => {
+  res.cookie("token", "").json(true);
+});
+
+function authenticateToken(req, res, next) {
+  const { token } = req.cookies;
+  if (token == null) {
+    return res.sendStatus(401);
+  }
+  jwt.verify(token, process.env.SECRET_ACCESS_TOKEN, {}, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
 app.listen(3000, () => {
   console.log("App is running at the port 3000");
 });
