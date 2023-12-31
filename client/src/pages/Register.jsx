@@ -44,7 +44,7 @@ export default function RegisterPage() {
                         name="name"  
                         value={name} 
                         ref={nameInput}
-                        onChange={e => setName(e.target.value)} />
+                        onChange={e => setName(e.target.value)} className="name"/>
                     
                     <input type="email" 
                         placeholder="your@email.com" 

@@ -5,6 +5,7 @@ import { FaHotel } from "react-icons/fa6";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import axios from "axios";
+import Places from "./Places";
 
 export default function AccountPage() {
     let { subPage } = useParams();
@@ -38,11 +39,7 @@ export default function AccountPage() {
 
     const Bookings = () => {
         return <div>Bookings</div>
-    }
-
-    const Places = () => {
-        return <div>Places</div>
-    }
+    }   
 
     function linkClasses(type = null) {
         let classes = "flex text-xs sm:text-base xl:text-lg items-center justify-around gap-2 bg-gray-300 rounded-full px-4 py-2 h-10 text-center"
@@ -58,7 +55,7 @@ export default function AccountPage() {
 
     return (
         <div className="w-full">
-            <nav className="flex flex-row items-center justify-evenly p-5 gap-1 mx-auto mb-3">
+            <nav className="max-w-max flex flex-row items-center gap-4 p-5 mx-auto mb-3">
                 <Link to={ "/account" } className={ linkClasses("profile") }>
                     <CgProfile size="20px" />
                     <p className="font-semibold">My profile</p>

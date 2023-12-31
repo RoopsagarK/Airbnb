@@ -6,8 +6,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import db from "./db.js";
+import imageDownloader from "image-downloader";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(
   cors({
@@ -15,6 +19,7 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -81,6 +86,17 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
+app.post("/uploadFromLink", async (req, res) => {
+  const { link } = req.body;
+  console.log("hit");
+  const newName = "photo" + Date.now() + ".jpg";
+  await imageDownloader.image({
+    url: link,
+    dest: __dirname + "/uploads/" + newName,
+  });
+  res.json(newName);
+});
+
 function authenticateToken(req, res, next) {
   const { token } = req.cookies;
   if (token == null) {
@@ -92,6 +108,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
 app.listen(3000, () => {
   console.log("App is running at the port 3000");
 });
