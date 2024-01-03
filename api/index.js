@@ -7,8 +7,10 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import db from "./db.js";
 import imageDownloader from "image-downloader";
+import multer from "multer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -19,6 +21,7 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -95,6 +98,20 @@ app.post("/uploadFromLink", async (req, res) => {
     dest: __dirname + "/uploads/" + newName,
   });
   res.json(newName);
+});
+
+const photosMiddleware = multer({ dest: "uploads" });
+app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+  const uploadedFiles = [];
+  for (let i = 0; i < req.files.length; i++) {
+    const { path, originalname } = req.files[i];
+    const parts = originalname.split(".");
+    const newPath = path + "." + parts[parts.length - 1];
+    fs.renameSync(path, newPath);
+    uploadedFiles.push(newPath.replace("uploads\\", ""));
+  }
+  console.log(uploadedFiles);
+  res.json(uploadedFiles);
 });
 
 function authenticateToken(req, res, next) {

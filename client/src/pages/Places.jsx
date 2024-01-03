@@ -32,6 +32,36 @@ export default function Places() {
         setPhotoLink("");
     }
 
+    function uploadPhoto(e) {
+        const files = e.target.files;
+        const data = new FormData();
+        for(let i=0; i<files.length; i++) {
+            data.append("photos", files[i]);
+        }
+
+        axios.post("/upload", data, {
+            headers: {"Content-type": "multipart/form-data"}
+        }).then(res => {
+            const {data:fileName} = res;
+            setAddedPhotos(prev => {
+                return [...prev, ...fileName]; 
+            });
+        });
+    }
+
+    function handleCheckBox(e) {
+        const {checked, name} = e.target;
+        if(checked) {
+            setPerks(prev => {
+                return [...prev, name];
+            });
+        }else {
+            setPerks(prev => {
+                return [...prev.filter(inst => inst !== name)];
+            });
+        }
+    }
+
     return (
     <>
         {action !== 'new' && (
@@ -63,14 +93,15 @@ export default function Places() {
                     </div>
                     <div className="grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mb-4">
                         {addedPhotos.length > 0 && addedPhotos.map((link, index) => (
-                            <div key={index}>
-                                <img className="rounded-2xl object-cover" src={"http://localhost:3000/uploads/" + link} alt=""/>
+                            <div key={index} className="h-32 flex">
+                                <img className="rounded-2xl object-cover h-full w-full" src={"http://localhost:3000/uploads/" + link} alt=""/>
                             </div>
                         ))}
-                        <button className="flex items-center gap-2 justify-center border-2 bg-transparent p-8 rounded-2xl">
+                        <label className="flex items-center cursor-pointer gap-2 justify-center border-2 bg-transparent p-8 rounded-2xl h-32">
+                            <input multiple type="file" className={"hidden"} accept="image/*" onChange={uploadPhoto}/>
                             <FiUpload size={"26px"} />
                             <p>Upload</p>
-                        </button>
+                        </label>
                     </div>
 
                     <h2 className="text-2xl font-semibold mt-4">Description</h2>
@@ -81,32 +112,32 @@ export default function Places() {
                     <p className="text-gray-500 text-sm md:text-base font-semibold">Select all the perks of your place</p>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 text-base font-semibold">
                         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-                            <input type="checkbox" />
+                            <input type="checkbox" name="wifi" onChange={handleCheckBox}/>
                             <FaWifi />
                             <span>Wi-fi</span>
                         </label>
                         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-                            <input type="checkbox" />
+                            <input type="checkbox"name="parking" onChange={handleCheckBox}/>
                             <FaCar />
                             <span>Parking</span>
                         </label>
                         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-                            <input type="checkbox" />
+                            <input type="checkbox" name="tv" onChange={handleCheckBox}/>
                             <LuMonitorCheck />
                             <span>TV</span>
                         </label>
                         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-                            <input type="checkbox"/> 
+                            <input type="checkbox" name="games" onChange={handleCheckBox}/> 
                             <IoGameController />
                             <span>Games</span>
                         </label>
                         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-                            <input type="checkbox" />
+                            <input type="checkbox" name="pets" onChange={handleCheckBox}/>
                             <MdOutlinePets />
                             <span>Pets</span>
                         </label>
                         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-                             <input type="checkbox" /> 
+                             <input type="checkbox" name="privateEntrance" onChange={handleCheckBox}/> 
                              <FaArrowRightToBracket/>
                             <span>Private entrance</span>
                         </label>

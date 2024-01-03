@@ -11,6 +11,7 @@ export default function LoginPage() {
     const [redirect, setRedirect] = useState(false);
     const {setUser} = useContext(UserContext);
     
+    
     async function loginUser(e) {
         e.preventDefault();
         try {
