@@ -114,6 +114,10 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   res.json(uploadedFiles);
 });
 
+app.post("/places", (req, res) => {
+  console.log(req.body);
+});
+
 function authenticateToken(req, res, next) {
   const { token } = req.cookies;
   if (token == null) {
