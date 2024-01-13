@@ -54,8 +54,8 @@ export default function AccountPage() {
     }
 
     return (
-        <div className="w-full">
-            <nav className="max-w-max flex flex-row items-center gap-4 p-5 mx-auto mb-3">
+        <div className="w-full mt-4">
+            <nav className="max-w-max flex flex-row items-center gap-4  mx-auto mb-3">
                 <Link to={ "/account" } className={ linkClasses("profile") }>
                     <CgProfile size="20px" />
                     <p className="font-semibold">My profile</p>

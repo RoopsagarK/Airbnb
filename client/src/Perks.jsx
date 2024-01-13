@@ -21,32 +21,32 @@ export default function Perks({perks, setPerks}) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 text-base font-semibold">
         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-            <input type="checkbox" name="wifi" onChange={handleCheckBox}/>
+            <input type="checkbox" checked={perks.includes("wifi")} name="wifi" onChange={handleCheckBox}/>
             <FaWifi />
             <span>Wi-fi</span>
         </label>
         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-            <input type="checkbox"name="parking" onChange={handleCheckBox}/>
+            <input type="checkbox" checked={perks.includes("parking")} name="parking" onChange={handleCheckBox}/>
             <FaCar />
             <span>Parking</span>
         </label>
         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-            <input type="checkbox" name="tv" onChange={handleCheckBox}/>
+            <input type="checkbox" checked={perks.includes("tv")} name="tv" onChange={handleCheckBox}/>
             <LuMonitorCheck />
             <span>TV</span>
         </label>
         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-            <input type="checkbox" name="games" onChange={handleCheckBox}/> 
+            <input type="checkbox" checked={perks.includes("games")} name="games" onChange={handleCheckBox}/> 
             <IoGameController />
             <span>Games</span>
         </label>
         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-            <input type="checkbox" name="pets" onChange={handleCheckBox}/>
+            <input type="checkbox" checked={perks.includes("pets")} name="pets" onChange={handleCheckBox}/>
             <MdOutlinePets />
             <span>Pets</span>
         </label>
         <label className="flex gap-2 p-6 border-2 rounded-2xl items-center justify-center cursor-pointer">
-             <input type="checkbox" name="privateEntrance" onChange={handleCheckBox}/> 
+             <input type="checkbox" checked={perks.includes("privateEntrance")} name="privateEntrance" onChange={handleCheckBox}/> 
              <FaArrowRightToBracket/>
             <span>Private entrance</span>
         </label>

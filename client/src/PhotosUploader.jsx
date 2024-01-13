@@ -1,6 +1,8 @@
 import axios from "axios";
 import { FiUpload } from "react-icons/fi";
-
+import { MdDeleteSweep } from "react-icons/md";
+import { FaStar } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
 
 export default function PhotosUploader({photoLink, setPhotoLink, addedPhotos, setAddedPhotos}) {
 
@@ -29,6 +31,20 @@ export default function PhotosUploader({photoLink, setPhotoLink, addedPhotos, se
             });
         });
     }
+    
+    function removePhoto(e, link) {
+        e.preventDefault();
+        setAddedPhotos(prev => {
+            return [...prev.filter(photoLink => photoLink !== link)];
+        })
+    }
+
+    function selectAsMainPhoto(e, link) {
+        e.preventDefault();
+        setAddedPhotos(prev => {
+            return [link, ...prev.filter(photoLink => photoLink !== link)];
+        })
+    }
   return (
     <div>
         <div className="flex items-center gap-2 mt-2 p-1">
@@ -37,8 +53,23 @@ export default function PhotosUploader({photoLink, setPhotoLink, addedPhotos, se
         </div>
         <div className="grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mb-4">
             {addedPhotos.length > 0 && addedPhotos.map((link, index) => (
-                <div key={index} className="h-32 flex">
-                    <img className="rounded-2xl object-cover h-full w-full" src={"http://localhost:3000/uploads/" + link} alt=""/>
+                <div key={index} className="h-32 flex cursor-pointer relative">
+                    <img className="rounded-2xl object-cover h-full w-full" src={"http://localhost:3000/uploads/" + link} alt={link}/>
+                    <div className="absolute bottom-0 right-0 max-w-max p-1">
+                        {addedPhotos[0] === link && (
+                            <button className="bg-transparent m-1 w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90">
+                                <FaStar size={"25px"} color="#f1f1f1"/>
+                            </button>
+                        )}
+                        {addedPhotos[0] !== link && (
+                            <button onClick={(e) => selectAsMainPhoto(e,link)} className="bg-transparent m-1 w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90">
+                                <FaRegStar size={"25px"} color="f1f1f1"/>
+                            </button>
+                        )}
+                        <button onClick={(e) => removePhoto(e,link)} className="bg-transparent w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90">
+                            <MdDeleteSweep size={"25px"} color="#f1f1f1"/>
+                        </button>
+                    </div>
                 </div>
             ))}
             <label className="flex items-center cursor-pointer gap-2 justify-center border-2 bg-transparent p-8 rounded-2xl h-32">

@@ -91,12 +91,18 @@ app.post("/logout", (req, res) => {
 
 app.post("/uploadFromLink", async (req, res) => {
   const { link } = req.body;
-  console.log("hit");
+  console.log("hit", link);
   const newName = "photo" + Date.now() + ".jpg";
-  await imageDownloader.image({
-    url: link,
-    dest: __dirname + "/uploads/" + newName,
-  });
+  try {
+    await imageDownloader.image({
+      url: link,
+      dest: __dirname + "/uploads/" + newName,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  console.log("damn you");
   res.json(newName);
 });
 
@@ -114,8 +120,98 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   res.json(uploadedFiles);
 });
 
-app.post("/places", (req, res) => {
-  console.log(req.body);
+app.post("/addNewPlace", authenticateToken, async (req, res) => {
+  const {
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+  } = req.body;
+
+  try {
+    const placeInserted = await db.query(
+      "INSERT INTO places(title, address, photos, description, perks, extrainfo, checkin, checkout, maxguests, prize, owner) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;",
+      [
+        title,
+        address,
+        addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+        req.user.id,
+      ]
+    );
+    res.status(201).json({ message: "New place created successfully" });
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get("/getUserPlaces", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const places = await db
+    .query("SELECT * FROM places WHERE owner = $1;", [id])
+    .catch((err) => console.error(err));
+  res.json(places.rows);
+});
+
+app.get("/places/:id", async (req, res) => {
+  const { id } = req.params;
+  const placeData = await db
+    .query("SELECT * FROM places WHERE id = $1;", [id])
+    .catch((err) => console.log(err));
+  res.json(placeData.rows[0]);
+});
+
+app.put("/updatePlaceData/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const {
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+  } = req.body;
+  await db
+    .query(
+      "UPDATE places SET title = $1, address = $2, photos = $3, description = $4, perks = $5, extrainfo = $6, checkin = $7, checkout = $8, maxguests = $9, prize = $10 WHERE id = $11 AND owner = $12;",
+      [
+        title,
+        address,
+        addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+        id,
+        req.user.id,
+      ]
+    )
+    .catch((err) => console.log(err));
+  res.status(200).json({ message: "Place updated successfully" });
+});
+
+app.get("/places", async (req, res) => {
+  const places = await db.query("SELECT * FROM places;");
+  res.json(places.rows);
 });
 
 function authenticateToken(req, res, next) {
