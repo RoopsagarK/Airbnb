@@ -14,7 +14,7 @@ export default function Places() {
         });
     }, []);
     const {pathname} = useLocation();
-    const isPhoneView = useMediaQuery({ query: '(max-width: 767px)' });
+    const isPhoneView = useMediaQuery({ query: '(max-width: 767px)' }); 
     
     return (pathname === "/account/places" &&
         <div className="flex-col justify-center">
@@ -34,7 +34,7 @@ export default function Places() {
                         <div>
                             <h2 className="md:text-2xl font-semibold">{place.title}</h2>
                             <p className="text-sm mt-2">
-                                {isPhoneView ? place.description.substring(0, 80) + "..." : place.description} 
+                                {isPhoneView ? place.description.substring(0, 80) + "..." : place.description.substring(0, 600) +  "..."} 
                             </p>
                         </div>
                     </Link>
