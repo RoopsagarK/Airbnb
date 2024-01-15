@@ -51,7 +51,7 @@ export default function Header() {
       </Link>
     </div>
         </header>
-        <hr />
+        <hr  className="absolute top-24 inset-0"/>
       </div>
     )
 }

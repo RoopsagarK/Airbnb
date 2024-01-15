@@ -214,6 +214,17 @@ app.get("/places", async (req, res) => {
   res.json(places.rows);
 });
 
+app.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const user = await db
+    .query("SELECT name, email FROM users WHERE id = $1;", [id])
+    .catch((err) => {
+      throw err;
+    });
+  res.json(user.rows[0]);
+});
+
 function authenticateToken(req, res, next) {
   const { token } = req.cookies;
   if (token == null) {
