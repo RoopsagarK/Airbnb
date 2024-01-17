@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 
 export default function Places() {
     const [places, setPlaces] = useState([]);
+
     useEffect(() => {
         axios.get("/getUserPlaces")
         .then(({data}) => setPlaces(data))

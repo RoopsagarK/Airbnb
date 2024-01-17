@@ -27,7 +27,7 @@ export default function IndexPage() {
           <div>
             <h1 className="mt-2 font-semibold">{place.address}</h1>
             <h3 className="text-gray-700 truncate">{place.title}</h3>
-            <h3><b>&#8377;{place.prize}</b> night</h3>
+            <h3><b>&#8377;{place.price}</b> night</h3>
           </div>
         </Link>
     ))}

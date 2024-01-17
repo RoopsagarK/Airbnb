@@ -80,7 +80,6 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", authenticateToken, (req, res) => {
   if (req.user) {
-    console.log(req.user);
     res.json(req.user);
   }
 });
@@ -136,7 +135,7 @@ app.post("/addNewPlace", authenticateToken, async (req, res) => {
 
   try {
     const placeInserted = await db.query(
-      "INSERT INTO places(title, address, photos, description, perks, extrainfo, checkin, checkout, maxguests, prize, owner) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;",
+      "INSERT INTO places(title, address, photos, description, perks, extrainfo, checkin, checkout, maxguests, price, owner) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;",
       [
         title,
         address,
@@ -189,7 +188,7 @@ app.put("/updatePlaceData/:id", authenticateToken, async (req, res) => {
   } = req.body;
   await db
     .query(
-      "UPDATE places SET title = $1, address = $2, photos = $3, description = $4, perks = $5, extrainfo = $6, checkin = $7, checkout = $8, maxguests = $9, prize = $10 WHERE id = $11 AND owner = $12;",
+      "UPDATE places SET title = $1, address = $2, photos = $3, description = $4, perks = $5, extrainfo = $6, checkin = $7, checkout = $8, maxguests = $9, price = $10 WHERE id = $11 AND owner = $12;",
       [
         title,
         address,
@@ -223,6 +222,44 @@ app.get("/user/:id", async (req, res) => {
       throw err;
     });
   res.json(user.rows[0]);
+});
+
+app.post("/bookings", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const {
+    place,
+    checkIn,
+    checkOut,
+    numberOfGuests,
+    name,
+    contactNumber,
+    price,
+  } = req.body;
+
+  const result = await db
+    .query(
+      "INSERT INTO bookings (place, check_in, check_out, number_of_guests, name, contact_number, price, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+      [place, checkIn, checkOut, numberOfGuests, name, contactNumber, price, id]
+    )
+    .catch((err) => {
+      throw err;
+    });
+
+  res.status(201).json({
+    status: "success",
+    message: "Booking created",
+    data: result.rows[0],
+  });
+});
+
+app.get("/getBookings", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const result = await db.query(
+    "SELECT bookings.*, places.* FROM bookings INNER JOIN places ON bookings.place = places.id WHERE bookings.user_id = $1;",
+    [id]
+  );
+  console.log(result.rows);
+  res.json(result.rows);
 });
 
 function authenticateToken(req, res, next) {

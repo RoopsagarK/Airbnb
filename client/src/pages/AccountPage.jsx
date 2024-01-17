@@ -6,6 +6,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import axios from "axios";
 import Places from "./Places";
+import Bookings from "./Bookings";
 
 export default function AccountPage() {
     let { subPage } = useParams();
@@ -36,10 +37,6 @@ export default function AccountPage() {
             </div>
         );
     }
-
-    const Bookings = () => {
-        return <div>Bookings</div>
-    }   
 
     function linkClasses(type = null) {
         let classes = "flex text-xs sm:text-base xl:text-lg items-center justify-around gap-2 bg-gray-300 rounded-full px-4 py-2 h-10 text-center"
