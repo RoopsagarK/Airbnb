@@ -4,7 +4,7 @@ import { IoIosMenu } from "react-icons/io";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../UserContext";
 
 
 export default function Header() {
