@@ -34,7 +34,7 @@ export default function PlacePage() {
             <PlaceGallery placeData={placeData}/>
 
         <div className="grid lg:grid-cols-[1fr_1fr] xl:grid-cols-[2fr_1.25fr] gap-6 mt-4">
-            <div className="grid">
+            <div className="grid grid-cols-1">
                 <div className="my-4">
                     <h1 className="font-bold text-2xl">About this space</h1>
                     <p className="mt-2 text-wrap text-justify">{placeData.description}</p>

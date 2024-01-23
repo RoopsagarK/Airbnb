@@ -52,18 +52,19 @@ export default function BookingWidget({placeData}) {
     <div className="bg-white p-4 rounded-2xl shadow-xl border-[1px]">
                     <p className="text-xl font-semibold">Price: &#8377;{(priceForTheDays && numberOfDays) ? <span>{priceForTheDays} for {numberOfDays} days</span> : (placeData.price + "/night")}</p>
                     <div className="grid my-4 border-[2px] rounded-2xl">
-                        <div className="grid grid-cols-2 border-b-[2px] border-gray-300 py-2 px-4">
-                            <div className="border-r-[2px] border-gray-300">
-                                <label className="font-semibold uppercase text-sm" htmlFor="dateCheckIn">Check-in:</label><br/>
+                        <div className="grid gap-2 md:grid-cols-2 border-b-[2px] text-xs sm:text-base xl:text-lg border-gray-300 py-2 px-4">
+                            <div className="md:border-b-0 md:border-r-[2px] border-gray-300">
+                                <label className="font-semibold uppercase text-sm" htmlFor="dateCheckIn">Check-in</label><br/>
                                 <input 
                                     type="date" 
                                     name="dateCheckIn" 
                                     value={checkIn} 
                                     onChange={e => setCheckIn(e.target.value)} 
                                     id="date" />
+                                    <div className="size-2"></div>
                             </div>
-                            <div className="pl-4">
-                                <label className="font-semibold uppercase text-sm" htmlFor="dateCheckOut">Check-out:</label><br />
+                            <div className="w-full">
+                                <label className="font-semibold uppercase text-sm" htmlFor="dateCheckOut">Check-out</label><br />
                                 <input 
                                     type="date" 
                                     name="dateCheckOut" 

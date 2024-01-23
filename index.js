@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 
 const app = express();
+const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(
@@ -27,7 +28,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   res.json("test ok");
 });
 
@@ -275,5 +276,5 @@ function authenticateToken(req, res, next) {
 }
 
 app.listen(3000, () => {
-  console.log("App is running at the port 3000");
+  console.log(`App is running at the port ${port}`);
 });

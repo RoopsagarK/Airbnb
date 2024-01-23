@@ -75,7 +75,7 @@ export default function PlaceGallery({placeData}) {
                     </>
             )}
             </div>
-            <button onClick={() => setShowAllPhotos(true)} className="flex items-center px-2 bg-white font-medium border-2 border-black py-1 rounded-md gap-2 absolute bottom-0 right-0 m-4 hover:bg-gray-100"><LuGalleryVertical />Show all photos</button>
+            <button onClick={() => setShowAllPhotos(true)} className="flex items-center px-2 bg-white font-medium border-2 border-black py-1 rounded-md gap-2 absolute bottom-0 right-0 m-4 hover:bg-gray-100 text-xs md:text-base"><LuGalleryVertical />Show all photos</button>
         </div>
   )
 }
