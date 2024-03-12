@@ -8,28 +8,28 @@ import cookieParser from "cookie-parser";
 import db from "./db.js";
 import imageDownloader from "image-downloader";
 import multer from "multer";
-import { dirname } from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(
   cors({
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
     origin: "http://localhost:5173",
   })
 );
-
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json("test ok");
+  res.send("Hello World!");
 });
 
 app.post("/register", async (req, res) => {
@@ -275,6 +275,6 @@ function authenticateToken(req, res, next) {
   });
 }
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`App is running at the port ${port}`);
 });
