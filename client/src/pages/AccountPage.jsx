@@ -4,8 +4,9 @@ import { FaList } from "react-icons/fa6";
 import { FaHotel } from "react-icons/fa6";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { UserContext } from "../UserContext";
-import axios from "axios";
 import Places from "./Places";
+import Favorites from "../components/Favorites";
+import axios from "axios";
 import Bookings from "./Bookings";
 
 export default function AccountPage() {
@@ -21,20 +22,24 @@ export default function AccountPage() {
         return "Loading...";
     }
 
-    async function handleLogout() {
-        await axios.post("/logout");
-        setRedirect("/");
-        setUser(null);
-    }
-
     const Profile = () => {
+
+        async function handleLogout() {
+            await axios.post("/logout");
+            setRedirect("/");
+            setUser(null);
+        }
+    
         return (
-            <div className="flex items-center justify-center p-4 gap-3 w-full">
-                <div className="w-max flex-col text-center gap-2 text-xs sm:text-base xl:text-lg">
-                    <p className="font-semibold">Logged in as { user?.name } ({ user?.email })</p><br />
-                    <button onClick={ handleLogout } className="primary max-w-sm">Logout</button>
-                </div>  
-            </div>
+            <>
+                <div className="flex items-center justify-center p-4 gap-3 w-full">
+                    <div className="w-max flex-col text-center gap-2 text-xs sm:text-base xl:text-lg">
+                        <p className="font-semibold">Logged in as { user?.name } ({ user?.email })</p><br />
+                        <button onClick={ handleLogout } className="primary max-w-sm">Logout</button>
+                    </div>  
+                </div>
+                <Favorites />
+            </>
         );
     }
 
@@ -66,7 +71,7 @@ export default function AccountPage() {
                     <p className="font-semibold">My accommodations</p>
                 </Link>
             </nav>
-            { (subPage === "profile") && <Profile /> }
+            { (subPage === "profile") && <Profile user={user} /> }
             { (subPage === "bookings") && <Bookings /> }
             { (subPage === "places") && <Places /> }
         </div>

@@ -67,7 +67,7 @@ app.post("/login", async (req, res) => {
           id: user.rows[0].id,
         },
         process.env.SECRET_ACCESS_TOKEN
-      );
+      );  
       res
         .cookie("token", token)
         .json({ message: "Login successful", user: user });
@@ -262,6 +262,62 @@ app.get("/getBookings", authenticateToken, async (req, res) => {
   console.log(result.rows);
   res.json(result.rows);
 });
+
+app.post("/filter", async (req, res) => {
+  const response = await db.query(
+    "SELECT * FROM places WHERE LOWER(title) LIKE '%' || $1 || '%' OR LOWER(address) LIKE '%' || $1 || '%';", 
+    [req.body.searchQuery.toLowerCase()]
+  );
+  res.json(response.rows);
+}); 
+
+app.post("/addToFavorites", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const { place_id } = req.body;
+  console.log(place_id);
+  const favorites = await db.query(
+    "INSERT INTO favorites (user_id, place_id) VALUES($1, $2) RETURNING *;",
+    [id, place_id]
+  ).catch(err => console.error(err));
+  res.status(201).json({
+    status: "success",
+    message: "Added to favorites",
+  });
+});
+
+app.get("/getFavorites", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const response = await db.query("SELECT place_id FROM favorites WHERE user_id = $1;", [id]);
+  const arrayOfIds = response.rows.map(obj => obj.place_id);
+  res.json(arrayOfIds);
+})
+
+app.post("/deleteFromFavorites", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { place_id } = req.body;
+    console.log(place_id);
+    const response = await db.query("DELETE FROM favorites WHERE user_id = $1 AND place_id = $2;", [id, place_id]);
+    console.log(response);
+    res.status(200).json({
+      status: "success",
+      message: "Entry deleted from favorites",
+    });
+  } catch (error) {
+    console.error("Error deleting from favorites:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/getFavoritesPlaces", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const response = await db.query(
+    "SELECT * FROM places p JOIN favorites f ON p.id = f.place_id AND f.user_id = $1;",
+    [id]
+  );
+  console.log(response.rows);
+  res.json(response.rows);
+})
 
 function authenticateToken(req, res, next) {
   const { token } = req.cookies;

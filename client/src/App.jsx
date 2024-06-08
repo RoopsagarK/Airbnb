@@ -10,12 +10,14 @@ import { UserContextProvider } from './UserContext.jsx';
 import PlacesFormPage from './pages/PlacesFormPage.jsx';
 import PlacePage from './pages/PlacePage.jsx';
 import BookingPage from './pages/BookingPage.jsx';
+import { SearchProvider } from './SearchContext.jsx';
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
 
 function App() {
   return (
     <UserContextProvider >
+      <SearchProvider>
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route index element={<IndexPage />} />
@@ -28,6 +30,7 @@ function App() {
           <Route path='/place/:id' element={<PlacePage />} />
         </Route>
       </Routes>
+      </SearchProvider>
     </UserContextProvider>
   )
 }

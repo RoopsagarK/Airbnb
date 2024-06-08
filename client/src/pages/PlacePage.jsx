@@ -5,6 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 import BookingWidget from "../components/BookingWidget";
 import PlaceGallery from "../components/PlaceGallery";
 import AddressLink from "../components/AddressLink";
+import Favorite from "../components/Favorite";
 
 export default function PlacePage() {
     const {id} = useParams();
@@ -29,7 +30,10 @@ export default function PlacePage() {
         
     return (
     <div className="px-12 py-4">
-            <h1 className="text-2xl font-semibold">{placeData.title}</h1>
+            <div className="text-2xl font-semibold flex gap-4 items-center">
+                {placeData.title}
+                <Favorite placeId={placeData.id} isPlacePage={true} />
+            </div>
             <AddressLink>{placeData.address}</AddressLink>
             <PlaceGallery placeData={placeData}/>
 

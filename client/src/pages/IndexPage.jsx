@@ -1,10 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+
+import { useSearch } from "../SearchContext";
+import Favorite from "../components/Favorite";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
+  const { searchQuery } = useSearch();
   useEffect(() => {
     axios.get("/places")
     .then(res => {
@@ -14,6 +17,13 @@ export default function IndexPage() {
       console.log(err);
     });
   }, []);
+
+  
+  useEffect(() => {
+    setPlaces([...searchQuery]);
+  }, [searchQuery]);  
+  
+
   return (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-8 p-8">
     {places.length > 0 && places.map((place, index) => (
@@ -21,7 +31,9 @@ export default function IndexPage() {
           {place.photos?.[0] && (
             <div className="flex h-64 shrink-0 relative">
               <img className="object-cover grow rounded-2xl" src={'http://localhost:3000/uploads/' + place.photos?.[0]} alt="" />
-              <div className="absolute right-0 p-5 h-max w-max"><FaRegHeart  color="white" size={"23px"}/></div>
+              <div className="absolute right-0 p-5 h-max w-max" >
+                <Favorite placeId={place.id} />
+              </div>
             </div>
           )}
           <div>
